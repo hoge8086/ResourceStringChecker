@@ -41,30 +41,38 @@ namespace ResourceStringChecker
 
     public class ResourceChecker
     {
+        IResourceFileReader resourceFileReader;
+        ISpecDocMetaInfoRepository specDocMetaInfoRepository;
+
+        public ResourceChecker(IResourceFileReader resourceFileReader, ISpecDocMetaInfoRepository specDocMetaInfoRepository)
+        {
+            this.resourceFileReader = resourceFileReader;
+            this.specDocMetaInfoRepository = specDocMetaInfoRepository;
+        }
+
         public List<CheckResult> Check(List<CheckTarget> targets)
         {
             var results = new List<CheckResult>();
-            foreach(var target in targets)
+            foreach (var target in targets)
             {
-                var specMetaInfo = GetMetaInfo(target.SpecName);
+                var specMetaInfo = specDocMetaInfoRepository.GetMetaInfo(target.SpecName);
                 var sheet = specMetaInfo.Sheets.FirstOrDefault(x => x.SheetName == target.SheetName);
-                using(var excel = new OperateExcel.OperateExcel())
+                using (var excel = new OperateExcel.OperateExcel())
                 {
                     excel.Open(specMetaInfo.SpecDocPath);
                     excel.SelectSheet(target.SheetName);
-                    foreach(var row in target.CheckRows)
+                    foreach (var row in target.CheckRows)
                     {
-                        foreach(var header in sheet.TableHeaders)
+                        foreach (var header in sheet.TableHeaders)
                         {
                             var resourceId = excel.Read<string>(Cell.A1(row, header.ResourceIdColumn));
-                            
-                            foreach(var langColumn in header.LanguageColumns)
+
+                            foreach (var langColumn in header.LanguageColumns)
                             {
-                                //var lang = langColumn.Language;
                                 var specString = excel.Read<string>(Cell.A1(row, langColumn.Column));
 
                                 var resourceFile = sheet.ResourceFiles.FirstOrDefault(x => x.Language == langColumn.Language);
-                                var resourceString = new ResourceFileReader(resourceFile.FilePath).Read(resourceId);
+                                var resourceString = resourceFileReader.Read(resourceFile.FilePath, resourceId);
 
                                 results.Add(
                                     new CheckResult(
@@ -82,24 +90,13 @@ namespace ResourceStringChecker
             return results;
         }
 
-        public SpecDocMetaInfo GetMetaInfo(string specName)
-        {
-            return new SpecDocMetaInfo();
-        }
     }
 
     public class ResourceStringConverter
     {
         static public string Convert(string specString)
         {
-            return "";
+            return specString;
         }
-
-    }
-    public class ResourceFileReader
-    {
-        public ResourceFileReader(string path) { }
-        public string Read(string resourceId) { return ""; }
-
     }
 }
