@@ -31,7 +31,7 @@ namespace ResourceStringChecker
             //string targetText = content.Substring(pos);
             string targetText = content.Substring(0, pos);
 
-            var matches = Regex.Matches(targetText, "\"[^\"]+\"");
+            var matches = Regex.Matches(targetText, "\"[^\"]*\"");
 
             if (matches.Count == 0)
                 return null;

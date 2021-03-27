@@ -6,7 +6,7 @@ namespace ResourceStringChecker
         public SpecDocMetaInfo GetMetaInfo(string specName)
         {
             var repo = new JsonRepository();
-            return repo.Load<SpecDocMetaInfo>(specName);
+            return repo.Load<SpecDocMetaInfo>(@"schema\" + specName);
         }
     }
 }

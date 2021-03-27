@@ -44,7 +44,7 @@ namespace ResourceStringChecker.Tests
             };
 
             var json = new JsonRepository();
-            json.Save<SpecDocMetaInfo>("abc.json", info);
+            json.Save<SpecDocMetaInfo>(@"schema\abc.json", info);
 
             var repo = new SpecDocMetaInfoRepository();
             var loadInfo = repo.GetMetaInfo("abc.json");
