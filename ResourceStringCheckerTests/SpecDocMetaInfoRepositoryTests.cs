@@ -49,5 +49,12 @@ namespace ResourceStringChecker.Tests
             var repo = new SpecDocMetaInfoRepository();
             var loadInfo = repo.GetMetaInfo("abc.json");
         }
+
+        [TestMethod()]
+        public void GetSpecListTest()
+        {
+            var repo = new SpecDocMetaInfoRepository();
+            var list = repo.GetSpecList();
+        }
     }
 }

@@ -53,6 +53,11 @@ namespace ResourceStringChecker.Tests
                 },
             };
         }
+
+        public List<SpecDoc> GetSpecList()
+        {
+            throw new NotImplementedException();
+        }
     }
 
     [TestClass()]
@@ -72,7 +77,7 @@ namespace ResourceStringChecker.Tests
         {
             var checker = new ResourceChecker(new ResourceFileReaderFactory(), new SpecDocMetaInfoRepository());
             var results = checker.Check(new List<CheckTarget>() {
-                new CheckTarget() { SpecName="abc.json", SheetName="sheet", CheckRows= new List<int> { 2, 3 } } }
+                new CheckTarget() { SpecName="abc", SheetName="sheet", CheckRows= new List<int> { 2, 3 } } }
             );
             //Assert.Fail();
         }
