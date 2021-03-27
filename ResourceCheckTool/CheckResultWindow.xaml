@@ -49,9 +49,9 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="詳細結果" MinWidth="50" Width="*" Binding="{Binding Error}"/>
-                <DataGridTextColumn Header="外仕文字" MaxWidth="80" Binding="{Binding SpecString}"/>
-                <DataGridTextColumn Header="リソース文字"  MaxWidth="80" Binding="{Binding ResourceString}"/>
+                <DataGridTextColumn Header="詳細結果" MinWidth="50" Width="1.5*" Binding="{Binding Error}"/>
+                <DataGridTextColumn Header="外仕文字" Width="*"  Binding="{Binding SpecString}"/>
+                <DataGridTextColumn Header="リソース文字"  Width="*" Binding="{Binding ResourceString}"/>
                 <DataGridTextColumn Header="外仕" Binding="{Binding SpecName}"/>
                 <DataGridTextColumn Header="シート名" Binding="{Binding SheetName}"/>
                 <DataGridTextColumn Header="行" Binding="{Binding Row}"/>
