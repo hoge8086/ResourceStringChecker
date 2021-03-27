@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ResourceStringChecker;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,8 +23,15 @@ namespace ResourceCheckTool
     {
         public MainWindow()
         {
+            var showMessage = new Action<string>(x => MessageBox.Show(x, "リソースチェックツール"));
+            var showResult = new Action<List<CheckResult>>(
+                x =>
+                {
+                    var win = new CheckResultWindow(x);
+                    win.ShowDialog();
+                });
             InitializeComponent();
-            this.DataContext = new MainWindowViewModel();
+            this.DataContext = new MainWindowViewModel(showResult, showMessage);
         }
     }
 }

@@ -19,7 +19,11 @@
         </Grid.RowDefinitions>
         <DataGrid Grid.Row="0" 
                   ItemsSource="{Binding CheckTargets}"
-                  AutoGenerateColumns="False">
+                  AutoGenerateColumns="False"
+                  AlternationCount="2"
+                  AlternatingRowBackground="AliceBlue"
+                  GridLinesVisibility="Vertical"
+                  VerticalGridLinesBrush="LightGray">
             <DataGrid.Columns>
                 <DataGridComboBoxColumn Header="外仕" Width="100"
                                     ItemsSource="{Binding Source={StaticResource specList}}"

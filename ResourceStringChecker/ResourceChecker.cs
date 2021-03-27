@@ -16,12 +16,12 @@ namespace ResourceStringChecker
 
     public class CheckResult
     {
-        public string SpecName;
-        public string SheetName;
-        public int Row;
-        public string SpecString;
-        public string ResourceString;
-        public bool Result;
+        public string SpecName { get; set; }
+        public string SheetName { get; set; }
+        public int Row { get; set; }
+        public string SpecString { get; set; }
+        public string ResourceString { get; set; }
+        public bool Result { get; set; }
 
         public CheckResult(
             string specName,

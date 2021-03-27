@@ -54,30 +54,43 @@ namespace ResourceCheckTool
             }
         }
         public DelegateCommand Check { get; }
-        public MainWindowViewModel()
+        public MainWindowViewModel(Action<List<CheckResult>> showResult, Action<string> showMessage)
         {
-            var repo = new SpecDocMetaInfoRepository();
-            var rcReaderFactory = new ResourceFileReaderFactory();
-            var checker = new ResourceChecker(rcReaderFactory, repo);
-            SpecDocments = repo.GetSpecList();
-            CheckTargets = new ObservableCollection<CheckTargetViewModel>();
-            CheckTargets.Add(new CheckTargetViewModel());
+            try
+            {
+                var repo = new SpecDocMetaInfoRepository();
+                var rcReaderFactory = new ResourceFileReaderFactory();
+                var checker = new ResourceChecker(rcReaderFactory, repo);
+                SpecDocments = repo.GetSpecList();
+                CheckTargets = new ObservableCollection<CheckTargetViewModel>();
+                CheckTargets.Add(new CheckTargetViewModel());
 
-            Check = new DelegateCommand(
-                () =>
-                {
-                    var targets = CheckTargets.Select(
-                        x => new CheckTarget()
+                Check = new DelegateCommand(
+                    () =>
+                    {
+                        try
                         {
-                            SpecName = x.SpecName,
-                            SheetName = x.SheetName,
-                            CheckRows = x.CheckRows.Split(new char[] { ',' }).Select(n => int.Parse(n.Trim())).ToList(),
+                            var targets = CheckTargets.Select(
+                                x => new CheckTarget()
+                                {
+                                    SpecName = x.SpecName,
+                                    SheetName = x.SheetName,
+                                    CheckRows = x.CheckRows.Split(new char[] { ',' }).Select(n => int.Parse(n.Trim())).ToList(),
+                                }
+                            ).ToList();
+                            var result = checker.Check(targets);
+                            showResult(result);
+                        }catch(Exception ex)
+                        {
+                            showMessage("エラー:\n" + ex.Message);
                         }
-                    ).ToList();
-                    checker.Check(targets);
-                }
-            );
+                    }
+                );
+            }
+            catch(Exception ex)
+            {
+                showMessage("エラー:\n" + ex.Message);
+            }
         }
-
     }
 }
