@@ -8,10 +8,17 @@ using System.Threading.Tasks;
 
 namespace ResourceStringChecker.Tests
 {
+    public class MockResourceFileReaderFactory : IResourceFileReaderFactory
+    {
+        public IResourceFileReader Create(ResourceFile resourceFile)
+        {
+            return new MockResourceFileReader();
+        }
+    }
     public class MockResourceFileReader : IResourceFileReader
     {
         public MockResourceFileReader() { }
-        public string Read(ResourceFile resource, string resourceId) { return "a"; }
+        public string FindString(string resourceId) { return "a"; }
 
     }
     public class MockSpecDocMetaInfoRepository : ISpecDocMetaInfoRepository
@@ -54,7 +61,7 @@ namespace ResourceStringChecker.Tests
         [TestMethod()]
         public void CheckTest()
         {
-            var checker = new ResourceChecker(new MockResourceFileReader(), new MockSpecDocMetaInfoRepository());
+            var checker = new ResourceChecker(new MockResourceFileReaderFactory(), new MockSpecDocMetaInfoRepository());
             var results = checker.Check(new List<CheckTarget>() {
                 new CheckTarget() { SpecName="spec", SheetName="sheet", CheckRows= new List<int> { 1, 2 } } }
             );

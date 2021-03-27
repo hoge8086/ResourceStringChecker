@@ -1,7 +1,11 @@
 ﻿namespace ResourceStringChecker
 {
+    public interface IResourceFileReaderFactory
+    {
+        IResourceFileReader Create(ResourceFile resourceFile);
+    }
     public interface IResourceFileReader
     {
-        string Read(string path, string resourceId);
+        string FindString(string resourceId);
     }
 }

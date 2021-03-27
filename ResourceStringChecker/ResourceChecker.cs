@@ -41,12 +41,12 @@ namespace ResourceStringChecker
 
     public class ResourceChecker
     {
-        IResourceFileReader resourceFileReader;
+        IResourceFileReaderFactory resourceFileReaderFactory;
         ISpecDocMetaInfoRepository specDocMetaInfoRepository;
 
-        public ResourceChecker(IResourceFileReader resourceFileReader, ISpecDocMetaInfoRepository specDocMetaInfoRepository)
+        public ResourceChecker(IResourceFileReaderFactory resourceFileReaderFactory, ISpecDocMetaInfoRepository specDocMetaInfoRepository)
         {
-            this.resourceFileReader = resourceFileReader;
+            this.resourceFileReaderFactory = resourceFileReaderFactory;
             this.specDocMetaInfoRepository = specDocMetaInfoRepository;
         }
 
@@ -57,6 +57,8 @@ namespace ResourceStringChecker
             {
                 var specMetaInfo = specDocMetaInfoRepository.GetMetaInfo(target.SpecName);
                 var sheet = specMetaInfo.Sheets.FirstOrDefault(x => x.SheetName == target.SheetName);
+                var resourceReaders = CreateResourceReaders(sheet.ResourceFiles);
+
                 using (var excel = new OperateExcel.OperateExcel())
                 {
                     excel.Open(specMetaInfo.SpecDocPath);
@@ -65,14 +67,13 @@ namespace ResourceStringChecker
                     {
                         foreach (var header in sheet.TableHeaders)
                         {
+
                             var resourceId = excel.Read<string>(Cell.A1(row, header.ResourceIdColumn));
 
                             foreach (var langColumn in header.LanguageColumns)
                             {
                                 var specString = excel.Read<string>(Cell.A1(row, langColumn.Column));
-
-                                var resourceFile = sheet.ResourceFiles.FirstOrDefault(x => x.Language == langColumn.Language);
-                                var resourceString = resourceFileReader.Read(resourceFile.FilePath, resourceId);
+                                var resourceString = resourceReaders[langColumn.Language].FindString(resourceId);
 
                                 results.Add(
                                     new CheckResult(
@@ -90,6 +91,17 @@ namespace ResourceStringChecker
             return results;
         }
 
+        private Dictionary<Language, IResourceFileReader> CreateResourceReaders(List<ResourceFile> resourceFiles)
+        {
+            var resourceReaders = new Dictionary<Language, IResourceFileReader>();
+            foreach (var resourceFile in resourceFiles)
+            {
+                var resourceFileReader = resourceFileReaderFactory.Create(resourceFile);
+                resourceReaders.Add(resourceFile.Language, resourceFileReader);
+            }
+
+            return resourceReaders;
+        }
     }
 
     public class ResourceStringConverter
