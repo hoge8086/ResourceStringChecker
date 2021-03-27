@@ -1,0 +1,48 @@
+﻿<Window x:Class="ResourceCheckTool.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ResourceCheckTool"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="200" Width="500">
+    <Window.Resources>
+        <CollectionViewSource x:Key="specList" Source="{Binding SpecList}" />
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <DataGrid Grid.Row="0" 
+                  ItemsSource="{Binding CheckTargets}"
+                  AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridComboBoxColumn Header="外仕" Width="100"
+                                    ItemsSource="{Binding Source={StaticResource specList}}"
+                                    SelectedItemBinding="{Binding SpecName}"/>
+                <!-- 参考:[https://stackoverflow.com/questions/5409259/binding-itemssource-of-a-comboboxcolumn-in-wpf-datagrid#28207175] -->
+                <DataGridTemplateColumn Header="シート名" Width="100">
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <ComboBox IsEditable="False" 
+                                Text="{Binding SheetName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                ItemsSource="{Binding Path=SheetNames, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding SheetName}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="チェック対象行番号" Width="*"
+                                    Binding="{Binding CheckRows, Mode=TwoWay}" />
+            </DataGrid.Columns>
+        </DataGrid>
+        <Button Grid.Row="1" Content="チェック実行" Command="{Binding Check}"/>
+    </Grid>
+</Window>
