@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourceCheckerTests.cs" />
+    <Compile Include="ResourceFileReaderTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
