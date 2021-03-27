@@ -19,10 +19,23 @@ namespace ResourceStringChecker
         public string SpecName { get; set; }
         public string SheetName { get; set; }
         public int Row { get; set; }
+        public string Error { get; set; }
         public string SpecString { get; set; }
         public string ResourceString { get; set; }
         public bool Result { get; set; }
 
+        public CheckResult(
+            string specName,
+            string sheetName,
+            int row,
+            string error)
+        {
+            SpecName = specName;
+            SheetName = sheetName;
+            Row = row;
+            Result = false;
+            Error = error;
+        }
         public CheckResult(
             string specName,
             string sheetName,
@@ -36,6 +49,10 @@ namespace ResourceStringChecker
             SpecString = specString;
             ResourceString = resourceString;
             Result = ResourceStringConverter.Convert(specString) == resourceString;
+            if (Result)
+                Error = "-";
+            else
+                Error = "外仕と差異があります.";
         }
     }
 
@@ -69,11 +86,32 @@ namespace ResourceStringChecker
                         {
 
                             var resourceId = excel.Read<string>(Cell.A1(row, header.ResourceIdColumn));
+                            if(string.IsNullOrEmpty(resourceId))
+                            {
+                                results.Add(new CheckResult(
+                                        target.SpecName,
+                                        sheet.SheetName,
+                                        row,
+                                        "外仕のリソースIDが空欄です."
+                                    ));
+                                continue;
+                            }
 
                             foreach (var langColumn in header.LanguageColumns)
                             {
                                 var specString = excel.Read<string>(Cell.A1(row, langColumn.Column));
                                 var resourceString = resourceReaders[langColumn.Language].FindString(resourceId);
+
+                                if(resourceString == null)
+                                {
+                                    results.Add(new CheckResult(
+                                            target.SpecName,
+                                            sheet.SheetName,
+                                            row,
+                                            "リソースID(" + resourceId +")がリソースファイルに見つかりません."
+                                        ));
+                                    continue;
+                                }
 
                                 results.Add(
                                     new CheckResult(
