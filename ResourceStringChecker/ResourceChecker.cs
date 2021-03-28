@@ -20,6 +20,7 @@ namespace ResourceStringChecker
         public string SheetName { get; set; }
         public int Row { get; set; }
         public string Error { get; set; }
+        public string ResouceFilePath{ get; set; }
         public string SpecString { get; set; }
         public string ResourceString { get; set; }
         public bool Result { get; set; }
@@ -28,11 +29,15 @@ namespace ResourceStringChecker
             string specName,
             string sheetName,
             int row,
+            string resouceFilePath,
             string error)
         {
             SpecName = specName;
             SheetName = sheetName;
             Row = row;
+            ResouceFilePath = resouceFilePath;
+            SpecString = "-";
+            ResourceString = "-";
             Result = false;
             Error = error;
         }
@@ -40,12 +45,14 @@ namespace ResourceStringChecker
             string specName,
             string sheetName,
             int row,
+            string resouceFilePath,
             string specString,
             string resourceString)
         {
             SpecName = specName;
             SheetName = sheetName;
             Row = row;
+            ResouceFilePath = resouceFilePath;
             SpecString = specString;
             ResourceString = resourceString;
             Result = ResourceStringConverter.Convert(specString) == resourceString;
@@ -65,6 +72,12 @@ namespace ResourceStringChecker
         {
             this.resourceFileReaderFactory = resourceFileReaderFactory;
             this.specDocMetaInfoRepository = specDocMetaInfoRepository;
+        }
+
+        class ResouceFileInfo
+        {
+            public IResourceFileReader Reader;
+            public ResourceFile ResourceFile;
         }
 
         public List<CheckResult> Check(List<CheckTarget> targets)
@@ -92,6 +105,7 @@ namespace ResourceStringChecker
                                         target.SpecName,
                                         sheet.SheetName,
                                         row,
+                                        "-",
                                         "外仕のリソースIDが空欄です."
                                     ));
                                 continue;
@@ -100,7 +114,8 @@ namespace ResourceStringChecker
                             foreach (var langColumn in header.LanguageColumns)
                             {
                                 var specString = excel.Read<string>(Cell.A1(row, langColumn.Column));
-                                var resourceString = resourceReaders[langColumn.Language].FindString(resourceId);
+                                var resouceFileInfo = resourceReaders[langColumn.Language];
+                                var resourceString = resouceFileInfo.Reader.FindString(resourceId);
 
                                 if(resourceString == null)
                                 {
@@ -108,6 +123,7 @@ namespace ResourceStringChecker
                                             target.SpecName,
                                             sheet.SheetName,
                                             row,
+                                            resouceFileInfo.ResourceFile.FilePath,
                                             "リソースID(" + resourceId +")がリソースファイルに見つかりません."
                                         ));
                                     continue;
@@ -118,6 +134,7 @@ namespace ResourceStringChecker
                                         target.SpecName,
                                         sheet.SheetName,
                                         row,
+                                        resouceFileInfo.ResourceFile.FilePath,
                                         resourceString,
                                         specString
                                     ));
@@ -129,16 +146,20 @@ namespace ResourceStringChecker
             return results;
         }
 
-        private Dictionary<Language, IResourceFileReader> CreateResourceReaders(List<ResourceFile> resourceFiles)
+        private Dictionary<Language, ResouceFileInfo> CreateResourceReaders(List<ResourceFile> resourceFiles)
         {
-            var resourceReaders = new Dictionary<Language, IResourceFileReader>();
+            var resouceFileDic = new Dictionary<Language, ResouceFileInfo>();
             foreach (var resourceFile in resourceFiles)
             {
                 var resourceFileReader = resourceFileReaderFactory.Create(resourceFile);
-                resourceReaders.Add(resourceFile.Language, resourceFileReader);
+
+                resouceFileDic.Add(
+                    resourceFile.Language,
+                    new ResouceFileInfo() { Reader = resourceFileReader, ResourceFile = resourceFile }
+                    );
             }
 
-            return resourceReaders;
+            return resouceFileDic;
         }
     }
 

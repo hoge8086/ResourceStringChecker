@@ -55,6 +55,7 @@
                 <DataGridTextColumn Header="外仕" Binding="{Binding SpecName}"/>
                 <DataGridTextColumn Header="シート名" Binding="{Binding SheetName}"/>
                 <DataGridTextColumn Header="行" Binding="{Binding Row}"/>
+                <DataGridTextColumn Header="リソースファイル" Binding="{Binding ResouceFilePath}"/>
             </DataGrid.Columns>
         </DataGrid>
         <Button x:Name="okButton" Grid.Row="1" Content="OK"/>

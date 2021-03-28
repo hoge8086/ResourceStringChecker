@@ -17,5 +17,11 @@ namespace ResourceStringChecker.Tests
             var reader = new ResourceFileReader(new ResourceFile() { FilePath = "resource.rc", Language = Language.Japanease, Encoding = "shift-jis" });
             var str = reader.FindString("IDC_BUTTON3");
         }
+        [TestMethod()]
+        public void FindStringTest2()
+        {
+            var reader = new ResourceFileReader(new ResourceFile() { FilePath = "resource.rc", Language = Language.Japanease, Encoding = "shift-jis" });
+            var str = reader.FindString("IDD_ABOUTBOX.IDC_STATIC");
+        }
     }
 }
