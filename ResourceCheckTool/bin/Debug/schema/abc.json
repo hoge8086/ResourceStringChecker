@@ -1,0 +1,29 @@
+{
+  "Sheets": [
+    {
+      "ResourceFiles": [
+        {
+          "Encoding": "shift-jis",
+          "FilePath": "リソース\\resource_jp.rc",
+          "Language": 0
+        },
+        {
+          "Encoding": "shift-jis",
+          "FilePath": "リソース\\resource_en.rc",
+          "Language": 1
+        }
+      ],
+      "SheetName": "sheet",
+      "TableHeaders": [
+        {
+          "LanguageColumns": [
+            { "Column": "B", "Language": 1 },
+            { "Column": "C", "Language": 0 }
+          ],
+          "ResourceIdColumn": "D"
+        }
+      ]
+    }
+  ],
+  "SpecDocPath": "外仕\\test.xlsx"
+}
