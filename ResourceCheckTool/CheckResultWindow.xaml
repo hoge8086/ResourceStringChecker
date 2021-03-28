@@ -11,10 +11,12 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <DataGrid Grid.Row="0" 
+        <CheckBox Grid.Row="0" Content="NGのみ一覧に表示する" IsChecked="{Binding RejectedFilter}" Margin="5,0,0,0"/>
+        <DataGrid Grid.Row="1" 
                   ItemsSource="{Binding CheckResults}"
                   CanUserAddRows="False"
                   AutoGenerateColumns="False"
@@ -49,7 +51,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="詳細結果" MinWidth="50" Width="1.5*" Binding="{Binding Error}"/>
+                <DataGridTextColumn  Header="詳細結果" MinWidth="50" Width="1.5*" Binding="{Binding Error}"/>
                 <DataGridTextColumn Header="外仕文字" Width="*"  Binding="{Binding SpecString}"/>
                 <DataGridTextColumn Header="リソース文字"  Width="*" Binding="{Binding ResourceString}"/>
                 <DataGridTextColumn Header="外仕" Binding="{Binding SpecName}"/>
@@ -58,6 +60,6 @@
                 <DataGridTextColumn Header="リソースファイル" Binding="{Binding ResouceFilePath}"/>
             </DataGrid.Columns>
         </DataGrid>
-        <Button x:Name="okButton" Grid.Row="1" Content="OK"/>
+        <Button x:Name="okButton" Grid.Row="2" Content="OK"/>
     </Grid>
 </Window>

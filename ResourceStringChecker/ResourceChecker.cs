@@ -55,11 +55,35 @@ namespace ResourceStringChecker
             ResouceFilePath = resouceFilePath;
             SpecString = specString;
             ResourceString = resourceString;
-            Result = ResourceStringConverter.Convert(specString) == resourceString;
+
+            var convSpecString = ResourceStringConverter.Convert(specString);
+            int diffIndex;
+            Result = StringCompare(convSpecString,resourceString, out diffIndex);
             if (Result)
                 Error = "-";
             else
-                Error = "外仕と差異があります.";
+                Error = "外仕とリソースに差異があります.(" + diffIndex.ToString() + "文字目)";
+        }
+
+        static public bool StringCompare(string left, string right, out int diffIndex)
+        {
+            for(int i = 0; i<left.Length && i<right.Length; i++)
+            {
+                if(left[i] != right[i])
+                {
+                    diffIndex = i + 1;
+                    return false;
+                }
+
+            }
+            if(left.Length != right.Length)
+            {
+                diffIndex = Math.Min(left.Length, right.Length) + 1;
+                return false;
+            }
+
+            diffIndex = 0;
+            return true;
         }
     }
 
@@ -167,6 +191,10 @@ namespace ResourceStringChecker
     {
         static public string Convert(string specString)
         {
+            specString.Replace("\"\"", "\"");
+            specString.Replace("\r\n", "\\n");
+            specString.Replace("\n", "\\n");
+            specString.Replace("\r", "\\n");
             return specString;
         }
     }
